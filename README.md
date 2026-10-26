@@ -225,8 +225,12 @@ can't inflate it. The digest is deterministic; the narrative is left to an LLM,
 which stays out of the binary so the pipeline is composable:
 
 ```sh
-claude-status recap --period day | claude -p "$(claude-status recap-prompt --period day)"
+claude-status recap --period day >digest.md
+claude -p "$(claude-status recap-prompt --period day)" <digest.md
 ```
+
+(Not a pipe: `claude -p` stops waiting on stdin after 3s, which a busy week's
+recap can exceed.)
 
 `recap` alone prints the digest (add `--json` for tooling); `recap-prompt` prints
 period-tuned instructions (day = terse standup, week = themes, quarter = narrative).

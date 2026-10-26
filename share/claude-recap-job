@@ -154,7 +154,8 @@ else
 fi
 
 tmp="$(mktemp)"
-trap 'rm -f "$tmp"' EXIT
+digest="$(mktemp)"
+trap 'rm -f "$tmp" "$digest"' EXIT
 
 prompt_args=(recap-prompt --period "$PERIOD")
 [ -n "$NOTE" ] && prompt_args+=(--note "$NOTE")
@@ -164,8 +165,10 @@ for attempt in 1 2 3; do
 	# Feed the LLM a metrics-free digest (it writes the narrative); the exact
 	# Metrics section is appended deterministically below so the model can't fudge
 	# the figures.
-	if claude-status recap "${WINDOW[@]}" --metrics none --db "$DB" --transcripts "$TRANSCRIPTS" \
-		| claude -p "$(claude-status "${prompt_args[@]}")" >"$tmp" 2>>"$LOG" \
+	# The digest goes through a file, not a pipe: claude -p gives up on stdin after
+	# 3s of silence, and a busy week's recap takes longer than that to produce.
+	if claude-status recap "${WINDOW[@]}" --metrics none --db "$DB" --transcripts "$TRANSCRIPTS" >"$digest" 2>>"$LOG" \
+		&& claude -p "$(claude-status "${prompt_args[@]}")" <"$digest" >"$tmp" 2>>"$LOG" \
 		&& [ -s "$tmp" ]; then
 		metrics="$(claude-status recap "${WINDOW[@]}" --metrics only --db "$DB" --transcripts "$TRANSCRIPTS" 2>>"$LOG")"
 		# Title names the recapped period; a small footer records when the doc was

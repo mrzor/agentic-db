@@ -246,7 +246,10 @@ func nullString(s string) sql.NullString {
 // LLM instructions to stdout. The recap data itself is NOT included — it reaches
 // the model via stdin in the pipeline:
 //
-//	claude-status recap --period day | claude -p "$(claude-status recap-prompt --period day)"
+//	claude-status recap --period day >digest.md
+//	claude -p "$(claude-status recap-prompt --period day)" <digest.md
+//
+// (A file, not a pipe: claude -p stops waiting on stdin after 3s.)
 func RunPrompt(args []string) error {
 	fs := flag.NewFlagSet("recap-prompt", flag.ContinueOnError)
 	period := fs.String("period", "day", "report shape: day|week|quarter")
