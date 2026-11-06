@@ -41,6 +41,7 @@ commands:
   tile-data    emit pwetty claude-tile JSON for one niri desktop (--output)
   tile-watch   stream tile JSON for one desktop on change (pwetty stream:true)
   tile-toggle  a tile click: jump to the desktop, or flip between its rows (--output)
+  tile-move    a tile drop: move desktop <src> to index <dst>, windows along (--output)
 `
 
 func main() {
@@ -84,6 +85,8 @@ func main() {
 		err = tile.RunWatch(args)
 	case "tile-toggle":
 		err = tile.RunToggle(args)
+	case "tile-move":
+		err = tile.RunMove(args)
 	default:
 		fmt.Fprintf(os.Stderr, "claude-status: unknown command %q\n\n", os.Args[1])
 		fmt.Fprint(os.Stderr, usage)

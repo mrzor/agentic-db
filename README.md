@@ -50,6 +50,7 @@ wired up:
 | `repo-backfill` | One-off, idempotent pass that backfills stored git repos for historical sessions (so old rows resolve in recap project metrics). |
 | `tile-data` | Emit the pwetty `claude`-tile JSON for one niri desktop, keyed by its per-output workspace index. Reads the daemon's precomputed tile cache (falls back to a live build when no daemon is up); always prints valid JSON. `--output` overrides the niri connector. |
 | `tile-watch` | Like `tile-data` but streams the payload for one desktop on every change (for a pwetty `stream: true` module) instead of printing once. |
+| `tile-move` | Backend for a pwetty tile drag-and-drop (`on_drop`): `tile-move <src> <dst>` moves the desktop at per-output index `src` to index `dst` (niri `move-workspace-to-index`; the windows travel with it, and the tiles re-render from the resulting workspace event). `--output` pins the connector like `tile-watch`. |
 
 ## Agent groups
 

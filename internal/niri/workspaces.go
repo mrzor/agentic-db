@@ -24,3 +24,12 @@ func ListWorkspaces() ([]Workspace, error) {
 	}
 	return ws, nil
 }
+
+// MoveWorkspaceToIndex runs `niri msg action move-workspace-to-index --reference
+// <src> <dst>`, reordering one desktop; its windows travel with it and niri
+// shifts the desktops in between. As with focus-workspace, a bare index
+// resolves on the FOCUSED output, so cross with FocusMonitor first to reorder
+// another output's desktops.
+func MoveWorkspaceToIndex(src, dst int) error {
+	return runAction("move-workspace-to-index", "--reference", itoa(src), itoa(dst))
+}
